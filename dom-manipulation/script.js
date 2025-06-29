@@ -11,7 +11,16 @@ function showRandomQuote() {
   quoteDisplay.innerHTML = `<p>"${quote.text}" — ${quote.category}</p>`;
 }
 
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+function addQuote() {
+  const quoteText = document.getElementById("newQuoteText").value.trim();
+  const quoteCategory = document.getElementById("newQuoteCategory").value.trim();
+
+  if (quoteText && quoteCategory) {
+    quotes.push({ text: quoteText, category: quoteCategory });
+    document.getElementById("newQuoteText").value = "";
+    document.getElementById("newQuoteCategory").value = "";
+  }
+}
 
 function createAddQuoteForm() {
   const formContainer = document.getElementById("quoteFormContainer");
@@ -21,17 +30,10 @@ function createAddQuoteForm() {
     <button id="addQuoteBtn">Add Quote</button>
   `;
 
-  document.getElementById("addQuoteBtn").addEventListener("click", () => {
-    const quoteText = document.getElementById("newQuoteText").value.trim();
-    const quoteCategory = document.getElementById("newQuoteCategory").value.trim();
-
-    if (quoteText && quoteCategory) {
-      quotes.push({ text: quoteText, category: quoteCategory });
-      document.getElementById("newQuoteText").value = "";
-      document.getElementById("newQuoteCategory").value = "";
-    }
-  });
+  document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
 }
 
-// Call the function to render the form on page load
+document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+
+// Call it to render the form
 createAddQuoteForm();
