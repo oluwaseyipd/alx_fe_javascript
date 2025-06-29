@@ -326,13 +326,34 @@ async function syncWithServer() {
       }
     });
 
-    if (newQuotesAdded) {
-      saveQuotes();
-      populateCategories();
-      notifyUser("Quotes updated from server (server data prioritized).");
-    }
+   if (newQuotesAdded) {
+  saveQuotes();
+  populateCategories();
+  notifyUser("Quotes updated from server (server data prioritized).");
+  await postQuotesToServer();
+}
+
   } catch (error) {
     notifyUser("Failed to sync with server.");
+  }
+}
+
+
+async function postQuotesToServer() {
+  try {
+    await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        quotes: quotes
+      })
+    });
+
+    notifyUser("Quotes successfully synced to server.");
+  } catch (error) {
+    notifyUser("Failed to sync quotes to server.");
   }
 }
 
