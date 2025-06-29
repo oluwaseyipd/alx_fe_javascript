@@ -312,7 +312,7 @@ async function fetchQuotesFromServer() {
 
 
 
-async function syncWithServer() {
+async function syncQuotes() {
   try {
     const serverQuotes = await fetchQuotesFromServer();
     const existingTexts = quotes.map(q => q.text);
@@ -381,8 +381,8 @@ createAddQuoteForm();
 populateCategories();
 filterQuotes(); // Load quotes on page load
 // Initial sync on load
-syncWithServer();
+syncQuotes();
 
 // Sync every 20 seconds
-setInterval(syncWithServer, 20000);
+setInterval(syncQuotes, 20000);
 
