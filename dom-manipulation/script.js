@@ -299,6 +299,59 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
+
+// Simulate fetching quotes from "server"
+function fetchQuotesFromServer() {
+  return fetch("https://jsonplaceholder.typicode.com/posts?_limit=3") // Simulate 3 quotes
+    .then(response => response.json())
+    .then(data => {
+      // Convert mock API posts to quote format
+      return data.map(post => ({
+        text: post.title,
+        category: "Server"
+      }));
+    });
+}
+
+
+
+function syncWithServer() {
+  fetchQuotesFromServer().then(serverQuotes => {
+    const existingTexts = quotes.map(q => q.text);
+
+    let newQuotesAdded = false;
+
+    serverQuotes.forEach(serverQuote => {
+      if (!existingTexts.includes(serverQuote.text)) {
+        quotes.push(serverQuote);
+        newQuotesAdded = true;
+      }
+    });
+
+    if (newQuotesAdded) {
+      saveQuotes();
+      populateCategories();
+      notifyUser("Quotes updated from server (server data prioritized).");
+    }
+  }).catch(() => {
+    notifyUser("Failed to sync with server.");
+  });
+}
+
+
+function notifyUser(message) {
+  const notification = document.getElementById("notification");
+  notification.textContent = message;
+  notification.style.display = "block";
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 4000);
+}
+
+
+
+
+
 // Init
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("exportBtn").addEventListener("click", exportToJsonFile);
@@ -307,4 +360,9 @@ loadQuotes();
 createAddQuoteForm();
 populateCategories();
 filterQuotes(); // Load quotes on page load
+// Initial sync on load
+syncWithServer();
+
+// Sync every 20 seconds
+setInterval(syncWithServer, 20000);
 
