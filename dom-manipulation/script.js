@@ -301,22 +301,20 @@ function importFromJsonFile(event) {
 
 
 // Simulate fetching quotes from "server"
-function fetchQuotesFromServer() {
-  return fetch("https://jsonplaceholder.typicode.com/posts?_limit=3") // Simulate 3 quotes
-    .then(response => response.json())
-    .then(data => {
-      // Convert mock API posts to quote format
-      return data.map(post => ({
-        text: post.title,
-        category: "Server"
-      }));
-    });
+async function fetchQuotesFromServer() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=3");
+  const data = await response.json();
+  return data.map(post => ({
+    text: post.title,
+    category: "Server"
+  }));
 }
 
 
 
-function syncWithServer() {
-  fetchQuotesFromServer().then(serverQuotes => {
+async function syncWithServer() {
+  try {
+    const serverQuotes = await fetchQuotesFromServer();
     const existingTexts = quotes.map(q => q.text);
 
     let newQuotesAdded = false;
@@ -333,10 +331,11 @@ function syncWithServer() {
       populateCategories();
       notifyUser("Quotes updated from server (server data prioritized).");
     }
-  }).catch(() => {
+  } catch (error) {
     notifyUser("Failed to sync with server.");
-  });
+  }
 }
+
 
 
 function notifyUser(message) {
