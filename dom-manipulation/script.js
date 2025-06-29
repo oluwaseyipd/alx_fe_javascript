@@ -351,7 +351,7 @@ async function postQuotesToServer() {
       })
     });
 
-    notifyUser("Quotes successfully synced to server.");
+    notifyUser("Quotes synced with server!");
   } catch (error) {
     notifyUser("Failed to sync quotes to server.");
   }
